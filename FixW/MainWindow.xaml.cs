@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,8 +28,8 @@ namespace FixW
     {
         private FixGui fixGui = new FixGui();
         private FixDictionary fdict;
-        private FixFile ff = null;
-
+        private FixFile fixFile = null;
+        private string fixFileName = "";
 
 
         public MainWindow()
@@ -36,6 +37,15 @@ namespace FixW
             l.MinLogLevel = l.Level.Debug;
             l.MinConsoleLogLevel = l.Level.Info;
             l.To("fixw.log");
+
+            if (Environment.GetCommandLineArgs().Length == 2)
+                fixFileName = Environment.GetCommandLineArgs()[1];
+            else
+                fixFileName = ConfigurationManager.AppSettings["FILE"];
+            if ( fixFileName == "" )
+                l.Fatal("No FIX file specified");
+            if (!File.Exists(fixFileName))
+                l.Fatal("Specified file does not exist:" + fixFileName);
 
             fdict = new FixDictionary();
             if (!fdict.Load(ConfigurationManager.AppSettings["FIXDICTIONARY"]))
@@ -67,17 +77,14 @@ namespace FixW
                 myGridView.Columns.Add(gvc1);
             }
             
-            
             listView.View = myGridView;
 
-
-
-            this.Title = ConfigurationManager.AppSettings["FILE"];
-            ff = new FixFile(ConfigurationManager.AppSettings["FILE"], FixFile.FileType.FIX);
+            fixFile = new FixFile(fixFileName);
+            this.Title = fixFile.GetStatus();
 
             System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
             dispatcherTimer.Tick += OnTimer;
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 100);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
             dispatcherTimer.Start();
 
         }
@@ -86,23 +93,29 @@ namespace FixW
         {
             // any lines to copy in
             int addedLines = 0;
-            lock(ff.Lines)
+            lock (fixGui.Lines)
             {
-                while(fixGui.Lines.Count < ff.Lines.Count  )
+                lock (fixFile.Lines)
                 {
-                    LineTag lt = ff.Lines[fixGui.Lines.Count];
-                    Line ln = new Line(lt);
-                    fixGui.Lines.Add(ln);
-                    addedLines++;
+                    while (fixGui.Lines.Count < fixFile.Lines.Count)
+                    {
+                        LineTag lt = fixFile.Lines[fixGui.Lines.Count];
+                        Line ln = new Line(lt);
+                        fixGui.Lines.Add(ln);
+                        addedLines++;
+                    }
                 }
             }
             if (addedLines > 0)
                 l.Info("Added {0} lines", addedLines);
+            string state = fixFile.GetStatus();
+            if (this.Title != state)
+                this.Title = state;
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            ff.Stop();
+            fixFile.Stop();
             base.OnClosing(e);
         }
 
@@ -117,14 +130,9 @@ namespace FixW
         {
             Console.WriteLine("Follow=" + fixGui.SelectedLine.ToString());
             CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(listView.ItemsSource);
-            
-            SetOrderFilter(fixGui.SelectedLine);
-            view.Filter = UserFilter;
-        }
 
-        private void SetOrderFilter(Line l)
-        {
-            ff.SetOrderFilter(l);
+            fixFile.SetOrderFilter(fixGui.SelectedLine.tag);
+            view.Filter = UserFilter;
         }
 
         private void ClearFollowContextMenu_Click(object sender, RoutedEventArgs e)
@@ -136,7 +144,7 @@ namespace FixW
         private bool UserFilter(object item)
         {
             Line  lt = (Line )item;
-            return lt.CanSee;
+            return !lt.tag.hide;
         }
     }
 }

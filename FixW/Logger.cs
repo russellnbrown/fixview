@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Text;
+using System.Windows;
 
 namespace FixW
 {
@@ -87,6 +88,7 @@ namespace FixW
 
                 if (lvl == Level.Fatal)
                 {
+                    MessageBox.Show(l,"Fatal error",  MessageBoxButton.OK);
                     Environment.ExitCode = -1;
                     System.Diagnostics.Process.GetCurrentProcess().Kill();
                 }

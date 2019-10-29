@@ -5,16 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FixW"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="800" Width="1200">
 
     <Window.Resources>
         <local:FixFieldConverter x:Key="fixFieldConverter"/>
+ 
     </Window.Resources>
     
     <DockPanel Name="mainPanel">
 
         <DockPanel Name="leftPanel"  DockPanel.Dock="Left" Background="HotPink" Width="350">
             <ListView x:Name="messageView" Background="Black" Foreground="Wheat" ItemsSource="{Binding Fields, Mode=OneWay}"  >
+                
                 <ListView.Resources>
                     <Style TargetType="{x:Type GridViewColumnHeader}">
                         <Setter Property="HorizontalContentAlignment" Value="Left" />
@@ -22,11 +24,12 @@
                 </ListView.Resources>
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn DisplayMemberBinding="{Binding Id}" Header="Id" Width="50"/>
+                        <GridViewColumn DisplayMemberBinding="{Binding Id}" Header="Field" Width="50"/>
                         <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Name" Width="100" />
                         <GridViewColumn DisplayMemberBinding="{Binding Value}" Header="Value"  Width="200"  />
                     </GridView>
                 </ListView.View>
+ 
             </ListView>
         </DockPanel>
 
@@ -34,7 +37,7 @@
         <DockPanel Name="rightPanel" DockPanel.Dock="Right" Background="LightBlue">
             <ListView x:Name="listView" Background="Black" ItemsSource="{Binding Lines, Mode=OneWay}" SelectedItem="{Binding SelectedLine, Mode=TwoWay}" SelectionMode="Single" SelectionChanged="listView_SelectionChanged"  >
 
-
+  
                 <ListView.ContextMenu>
                     <ContextMenu Name="OrderSelect" StaysOpen="true" Background="WhiteSmoke">
                         <ContextMenu.BitmapEffect>
@@ -74,6 +77,7 @@
                         </Style.Triggers>
                     </Style>
                 </ListView.Resources>
+                             
             </ListView>
         </DockPanel>
     </DockPanel>

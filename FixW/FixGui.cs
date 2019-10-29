@@ -94,9 +94,7 @@ namespace FixW
             this.tag = tag;
         }
         internal LineTag tag = null;
-        bool cansee = true;
-
-        public bool CanSee { get => cansee; set => cansee = value; }
+ 
 
         public String Field(String id)
         {
