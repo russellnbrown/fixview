@@ -33,26 +33,25 @@ namespace FixViewer
     public class FixGui :  INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        private String filename = "";
-
+ 
         private ObservableCollection<Field> fields = new ObservableCollection<Field>();
-        internal ObservableCollection<Field> Fields
+        public ObservableCollection<Field> Fields
         {
             get { return fields; }
             set { fields = value; }
         }
 
         private ObservableCollection<Line> lines = new ObservableCollection<Line>();
-        internal ObservableCollection<Line> Lines
+        public ObservableCollection<Line> Lines
         {
             get { return lines; }
             set { lines = value; }
         }
 
         private Line selectedLine;
-        internal Line SelectedLine { get { return selectedLine; } set { selectedLine = value; UpdateFields(selectedLine); } }
+        public Line SelectedLine { get { return selectedLine; } set { selectedLine = value; UpdateFields(selectedLine); } }
 
-        internal void UpdateFields(Line selected)
+        public void UpdateFields(Line selected)
         {
             if (selected == null)
                 return;
@@ -69,9 +68,9 @@ namespace FixViewer
 
 
 
-    internal class Field
+    public class Field
     {
-        internal Field(String name, String id, String val)
+        public Field(String name, String id, String val)
         {
             this.name = name;
             this.id = id;
@@ -81,22 +80,22 @@ namespace FixViewer
         private string value = "";
         private string id = "";
 
-        internal String Name { get { return name; } }
-        internal String Id { get { return id; } }
-        internal String Value { get { return value; } }
+        public String Name { get { return name; } }
+        public String Id { get { return id; } }
+        public String Value { get { return value; } }
     }
 
 
-    internal class Line
+    public class Line
     {
-        internal Line(LineTag tag)
+        public Line(LineTag tag)
         {
             this.tag = tag;
         }
         internal LineTag tag = null;
 
 
-        internal String Field(String id)
+        public String Field(String id)
         {
             if (tag.fields.ContainsKey(id))
                 return tag.fields[id];

@@ -50,7 +50,7 @@ namespace FixViewer
         // list of lines - directly from file - adding/removing to this is protected by locking as we add to the
         // list in our 'mon' thread and remove in the main GUI thread.
         private List<LineTag> lines = new List<LineTag>();
-        internal List<LineTag> Lines { get { return lines; } }
+        public List<LineTag> Lines {  get { return lines;  } }
 
         // Stop - called from main thread. running is set to false which will cause
         // the readThread to stop & exit
@@ -235,7 +235,7 @@ namespace FixViewer
 
         // Called from main GUI, passes us a line, hide all lines not relevant to the order
         // and unhide relevant ones using the order trail
-        internal void SetOrderFilter(LineTag fl)
+        public void SetOrderFilter(LineTag fl)
         {
             // Hide all lines
             lock (lines)
@@ -258,25 +258,24 @@ namespace FixViewer
     }
 
     // OrderTrail - class to hold list of lines forming the order trail
-    internal class OrderTrail
+    public class OrderTrail
     {
-        internal List<LineTag> lines = new List<LineTag>();
+        public List<LineTag> lines = new List<LineTag>();
     }
 
     // LineTag - class to hold relevant information for a line in the fix file
-    internal class LineTag
+    public class LineTag
     {
-        // LineTag - constructor. saves a copy of the raw line data
-        internal LineTag(string l)
+        public LineTag(string l)
         {
             raw = l;
         }
-        internal string raw;
-        internal string type;
-        internal string id;
-        internal bool hide = false;
-        internal OrderTrail orderTrail = null;
-        internal Dictionary<String, String> fields = new Dictionary<String, String>();
+        public string raw;
+        public string type;
+        public string id;
+        public bool hide = false;
+        public OrderTrail orderTrail = null;
+        public Dictionary<String, String> fields = new Dictionary<String, String>();
 
     }
 
