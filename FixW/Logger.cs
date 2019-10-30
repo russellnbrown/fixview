@@ -4,7 +4,7 @@ using System.Threading;
 using System.Text;
 using System.Windows;
 
-namespace FixW
+namespace FixViewer
 {
     public class l
     {

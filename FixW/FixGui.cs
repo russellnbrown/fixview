@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
-namespace FixW
+namespace FixViewer
 {
 
     public class FixFieldConverter : IValueConverter
@@ -30,29 +30,29 @@ namespace FixW
     }
 
 
-    class FixGui :  INotifyPropertyChanged
+    public class FixGui :  INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private String filename = "";
 
         private ObservableCollection<Field> fields = new ObservableCollection<Field>();
-        public ObservableCollection<Field> Fields
+        internal ObservableCollection<Field> Fields
         {
             get { return fields; }
             set { fields = value; }
         }
 
         private ObservableCollection<Line> lines = new ObservableCollection<Line>();
-        public ObservableCollection<Line> Lines
+        internal ObservableCollection<Line> Lines
         {
             get { return lines; }
             set { lines = value; }
         }
 
         private Line selectedLine;
-        public Line SelectedLine { get { return selectedLine; } set { selectedLine = value; UpdateFields(selectedLine); } }
+        internal Line SelectedLine { get { return selectedLine; } set { selectedLine = value; UpdateFields(selectedLine); } }
 
-        public void UpdateFields(Line selected)
+        internal void UpdateFields(Line selected)
         {
             if (selected == null)
                 return;
@@ -69,9 +69,9 @@ namespace FixW
 
 
 
-    public class Field
+    internal class Field
     {
-        public Field(String name, String id, String val)
+        internal Field(String name, String id, String val)
         {
             this.name = name;
             this.id = id;
@@ -81,22 +81,22 @@ namespace FixW
         private string value = "";
         private string id = "";
 
-        public String Name { get { return name; } }
-        public String Id { get { return id; } }
-        public String Value { get { return value; } }
+        internal String Name { get { return name; } }
+        internal String Id { get { return id; } }
+        internal String Value { get { return value; } }
     }
 
 
-    public class Line
+    internal class Line
     {
-        public Line(LineTag tag)
+        internal Line(LineTag tag)
         {
             this.tag = tag;
         }
         internal LineTag tag = null;
- 
 
-        public String Field(String id)
+
+        internal String Field(String id)
         {
             if (tag.fields.ContainsKey(id))
                 return tag.fields[id];
